@@ -7,6 +7,7 @@ class AttackingState:State
 {
     float timeShot = 0.25f;
     GameObject enemyGameObject;
+	GameManager gm;
 
 
     public override string Description()
@@ -25,6 +26,7 @@ class AttackingState:State
         myGameObject.GetComponent<SteeringBehaviours>().OffsetPursuitEnabled = true;
         myGameObject.GetComponent<SteeringBehaviours>().offsetPursuitOffset = new Vector3(0, 0, 5);
         myGameObject.GetComponent<SteeringBehaviours>().offsetPursueTarget = enemyGameObject;
+		gm = GameObject.Find ("GameManager").GetComponent<GameManager>();
     }
 
     public override void Exit()
@@ -33,10 +35,10 @@ class AttackingState:State
 
     public override void Update()
     {
-		if(enemyGameObject == null)
-		{
-			myGameObject.GetComponent<StateMachine>().SwitchState(new IdleState(myGameObject, myGameObject));
-		}
+
+
+
+
         float range = 10.0f;
         timeShot += Time.deltaTime;
         float fov = Mathf.PI / 4.0f;

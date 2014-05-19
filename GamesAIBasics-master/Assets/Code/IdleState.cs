@@ -36,19 +36,26 @@ public class IdleState: State
 
     public override void Update()
     {
-        float range = 10f;    
-		float fov = Mathf.PI / 4.0f;
-		float angle;
-		enemyGameObject = GameObject.Find ("Bot");
-		Vector3 toEnemy = (enemyGameObject.transform.position - myGameObject.transform.position);
-		toEnemy.Normalize();
-		angle = (float) Math.Acos(Vector3.Dot(toEnemy, myGameObject.transform.forward));
-
-		if (angle < fov) //is the enemy in my field of view?
+		
+		for(int i = 0; i < gm.bots.Count; i++)
 		{
-			if ((enemyGameObject.transform.position - myGameObject.transform.position).magnitude < range)
+			if(gm.bots[i].name == "Bot")
 			{
-				myGameObject.GetComponent<StateMachine>().SwitchState(new AttackingState(myGameObject, enemyGameObject));
+				float range = 10f;    
+				float fov = Mathf.PI / 4.0f;
+				float angle;
+				//enemyGameObject = GameObject.Find ("Bot");
+				Vector3 toEnemy = (gm.bots[i].transform.position - myGameObject.transform.position);
+				toEnemy.Normalize();
+				angle = (float) Math.Acos(Vector3.Dot(toEnemy, myGameObject.transform.forward));
+				
+				if (angle < fov) //is the enemy in my field of view?
+				{
+					if ((gm.bots[i].transform.position - myGameObject.transform.position).magnitude < range)
+					{
+						myGameObject.GetComponent<StateMachine>().SwitchState(new AttackingState(myGameObject, gm.bots[i].gameObject));
+					}
+				}
 			}
 		}
     }

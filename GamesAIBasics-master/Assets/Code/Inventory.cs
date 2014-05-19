@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Inventory : MonoBehaviour {
 
-	public int healthAmt = 15;
+	public int healthAmt = 10;
 	public int ammoAmt = 10;
 	GameManager gm;
 
@@ -18,7 +18,7 @@ public class Inventory : MonoBehaviour {
 		{
 			FindAmmo();
 		}
-		if(healthAmt <= 10)
+		if(healthAmt <= 5)
 		{
 			FindHealth();
 		}
@@ -38,6 +38,6 @@ public class Inventory : MonoBehaviour {
 
 	void FindHealth()
 	{
-		//GET HEALTH STATE GetComponent<StateMachine>().SwitchState(new GetAmmoState(gameObject));
+		GetComponent<StateMachine>().SwitchState(new GetHealthState(gameObject));
 	}
 }

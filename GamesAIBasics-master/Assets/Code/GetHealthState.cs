@@ -4,20 +4,20 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-class GetAmmoState:State
+class GetHealthState:State
 {
-	GameObject myGameObject, ammoTarget;
-	bool foundNearestAmmo = false;
+	GameObject myGameObject, healthTarget;
+	bool foundNearestHealth = false;
 	float distanceCheck = 0f;
 	Vector3 newTar = Vector3.zero;
 	GameManager gm;
 
     public override string Description()
     {
-		return "Finding Ammo!";
+		return "Finding Health!";
     }
 
-	public GetAmmoState(GameObject myGameObject):base(myGameObject)
+	public GetHealthState(GameObject myGameObject):base(myGameObject)
     {
 		this.myGameObject = myGameObject;
     }
@@ -31,19 +31,27 @@ class GetAmmoState:State
 
     public override void Update()
     {
-		if(!foundNearestAmmo)
+		if(GameObject.Find ("Health")!=null)
 		{
-			ammoTarget = GameObject.Find ("Ammo");
-			myGameObject.GetComponent<SteeringBehaviours>().seekPos = ammoTarget.transform.position;
-			foundNearestAmmo = true;
+			if(!foundNearestHealth)
+			{
+				healthTarget = GameObject.Find ("Health");
+				myGameObject.GetComponent<SteeringBehaviours>().seekPos = healthTarget.transform.position;
+				foundNearestHealth = true;
+			}
+			if((healthTarget.transform.position - myGameObject.transform.position).magnitude < 1f)
+			{
+				myGameObject.GetComponent<Inventory>().healthAmt += 10;
+				gm.healths.Remove(healthTarget);
+				MonoBehaviour.Destroy(healthTarget);
+				myGameObject.GetComponent<StateMachine>().SwitchState(new IdleState(myGameObject, myGameObject));
+			}
 		}
-		if((ammoTarget.transform.position - myGameObject.transform.position).magnitude < 1f)
+		else
 		{
-			myGameObject.GetComponent<Inventory>().ammoAmt += 10;
-			gm.ammos.Remove(ammoTarget);
-			MonoBehaviour.Destroy(ammoTarget);
 			myGameObject.GetComponent<StateMachine>().SwitchState(new IdleState(myGameObject, myGameObject));
 		}
+
     }
 
     public override void Exit()
