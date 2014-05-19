@@ -6,8 +6,8 @@ public class GameManager : MonoBehaviour {
 
 	Object bot, ammo;
 	int botCount = 5, ammoCount = 10;
-	List<GameObject> bots = new List<GameObject>();
-	List<GameObject> ammos = new List<GameObject>();
+	public List<GameObject> bots = new List<GameObject>();
+	public List<GameObject> ammos = new List<GameObject>();
 	Vector3 newPos;
 
 	void Start () 
@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviour {
 			botIns.name = "Bot";
 			botIns.tag = "BotTag";
 			bots.Add(botIns);
+			botIns.GetComponent<StateMachine>().SwitchState(new IdleState(botIns, botIns));
 		}
 	}
 

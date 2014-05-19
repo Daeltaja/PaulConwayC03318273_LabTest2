@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IdleState:State
+public class IdleState: State
 {
     static Vector3 initialPos = Vector3.zero;
 
@@ -21,10 +21,8 @@ public class IdleState:State
 
     public override void Enter()
     {
-        myGameObject.GetComponent<SteeringBehaviours>().path.Waypoints.Add(new Vector3(0, 0, -20));
-        myGameObject.GetComponent<SteeringBehaviours>().path.Waypoints.Add(new Vector3(-30, 0, 0));
-        myGameObject.GetComponent<SteeringBehaviours>().path.Waypoints.Add(new Vector3(0, 0, 20));
-        myGameObject.GetComponent<SteeringBehaviours>().path.Waypoints.Add(new Vector3(25, 0, -10));
+		myGameObject.GetComponent<SteeringBehaviours>().path.Waypoints.Add(new Vector3(UnityEngine.Random.Range(-30f, 30f), 0, UnityEngine.Random.Range(-30f, 30f)));
+		myGameObject.GetComponent<SteeringBehaviours>().path.Waypoints.Add(new Vector3(UnityEngine.Random.Range(-30f, 30f), 0, UnityEngine.Random.Range(-30f, 30f)));
         myGameObject.GetComponent<SteeringBehaviours>().path.Looped = true;            
         myGameObject.GetComponent<SteeringBehaviours>().path.draw = true;
         myGameObject.GetComponent<SteeringBehaviours>().TurnOffAll();
@@ -37,12 +35,20 @@ public class IdleState:State
 
     public override void Update()
     {
-        float range = 5.0f;           
-        // Can I see the enemy?
-        if ((enemyGameObject.transform.position - myGameObject.transform.position).magnitude < range)
-        {
-            // Is the leader inside my FOV
-            myGameObject.GetComponent<StateMachine>().SwitchState(new AttackingState(myGameObject, enemyGameObject));
-        }
+        float range = 10f;    
+		float fov = Mathf.PI / 4.0f;
+		float angle;
+		enemyGameObject = GameObject.Find ("Bot");
+		Vector3 toEnemy = (enemyGameObject.transform.position - myGameObject.transform.position);
+		toEnemy.Normalize();
+		angle = (float) Math.Acos(Vector3.Dot(toEnemy, myGameObject.transform.forward));
+
+		if (angle < fov) //is the enemy in my field of view?
+		{
+			if ((enemyGameObject.transform.position - myGameObject.transform.position).magnitude < range)
+			{
+				myGameObject.GetComponent<StateMachine>().SwitchState(new AttackingState(myGameObject, enemyGameObject));
+			}
+		}
     }
 }

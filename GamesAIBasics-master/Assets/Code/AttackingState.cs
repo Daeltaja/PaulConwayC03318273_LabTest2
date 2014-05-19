@@ -37,27 +37,26 @@ class AttackingState:State
         float fov = Mathf.PI / 4.0f;
         // Can I see the enemy?
 
-        if ((enemyGameObject.transform.position - myGameObject.transform.position).magnitude > range)
-        {
-            myGameObject.GetComponent<StateMachine>().SwitchState(new IdleState(myGameObject, enemyGameObject));
-        }
-        else
-        {
-            float angle;
-            Vector3 toEnemy = (enemyGameObject.transform.position - myGameObject.transform.position);
-            toEnemy.Normalize();
-            angle = (float) Math.Acos(Vector3.Dot(toEnemy, myGameObject.transform.forward));
-            if (angle < fov)
-            {
-                if (timeShot > 0.25f)
-                {
-                    GameObject lazer = new GameObject();
-                    lazer.AddComponent<Lazer>();
-                    lazer.transform.position = myGameObject.transform.position;
-                    lazer.transform.forward = myGameObject.transform.forward;
-                    timeShot = 0.0f;
-                }
-            }
-        }
+       
+	    float angle;
+	    Vector3 toEnemy = (enemyGameObject.transform.position - myGameObject.transform.position);
+	    toEnemy.Normalize();
+	    angle = (float) Math.Acos(Vector3.Dot(toEnemy, myGameObject.transform.forward));
+	    if (angle < fov)
+	    {
+	        if (timeShot > 0.25f)
+	        {
+	            GameObject lazer = new GameObject();
+	            lazer.AddComponent<Lazer>();
+	            lazer.transform.position = myGameObject.transform.position;
+	            lazer.transform.forward = myGameObject.transform.forward;
+	            timeShot = 0.0f;
+				myGameObject.GetComponent<Inventory>().ammoAmt --;
+	        }
+	    }
+		else
+		{
+			myGameObject.GetComponent<StateMachine>().SwitchState(new IdleState(myGameObject, enemyGameObject));
+		}
     }
 }
