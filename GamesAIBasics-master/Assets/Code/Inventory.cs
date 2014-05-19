@@ -5,6 +5,12 @@ public class Inventory : MonoBehaviour {
 
 	public int healthAmt = 15;
 	public int ammoAmt = 10;
+	GameManager gm;
+
+	void Start()
+	{
+		gm = GameObject.Find ("GameManager").GetComponent<GameManager>();
+	}
 
 	void Update()
 	{
@@ -16,7 +22,14 @@ public class Inventory : MonoBehaviour {
 		{
 			FindHealth();
 		}
+		if(healthAmt <= 0)
+		{
+			gm.bots.Remove(gameObject);
+			Destroy(gameObject);
+		}
 	}
+
+
 
 	void FindAmmo()
 	{

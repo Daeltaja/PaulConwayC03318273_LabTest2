@@ -8,6 +8,8 @@ class GetAmmoState:State
 {
 	GameObject myGameObject, ammoTarget;
 	bool foundNearestAmmo = false;
+	float distanceCheck = 0f;
+	Vector3 newTar = Vector3.zero;
 	GameManager gm;
 
     public override string Description()
@@ -31,6 +33,19 @@ class GetAmmoState:State
     {
 		if(!foundNearestAmmo)
 		{
+			foreach(GameObject go in gm.ammos)
+			{
+				float toOther = (go.transform.position - myGameObject.transform.position).magnitude;
+			}
+			for(int i = 0; i < gm.ammos.Count; i++)
+			{
+				if(Vector3.Distance(gm.ammos[i].transform.position, myGameObject.transform.position) < distanceCheck)
+				{
+					newTar = gm.ammos[i].transform.position;
+					//distanceCheck = 
+					//ammoTarget = gm.ammos[i].transform.position;
+				}
+			}
 			ammoTarget = GameObject.Find ("Ammo");
 			myGameObject.GetComponent<SteeringBehaviours>().seekPos = ammoTarget.transform.position;
 			foundNearestAmmo = true;

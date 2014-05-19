@@ -5,8 +5,8 @@ using UnityEngine;
 public class IdleState: State
 {
     static Vector3 initialPos = Vector3.zero;
-
     GameObject enemyGameObject;
+	GameManager gm;
 
     public override string Description()
     {
@@ -27,6 +27,7 @@ public class IdleState: State
         myGameObject.GetComponent<SteeringBehaviours>().path.draw = true;
         myGameObject.GetComponent<SteeringBehaviours>().TurnOffAll();
         myGameObject.GetComponent<SteeringBehaviours>().FollowPathEnabled = true;
+		gm = GameObject.Find ("GameManager").GetComponent<GameManager>();
     }
     public override void Exit()
     {

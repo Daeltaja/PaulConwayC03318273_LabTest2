@@ -9,39 +9,61 @@ public class GameManager : MonoBehaviour {
 	public List<GameObject> bots = new List<GameObject>();
 	public List<GameObject> ammos = new List<GameObject>();
 	Vector3 newPos;
+	bool spawnBot, spawnAmmo;
 
 	void Start () 
 	{
-       	//leader.GetComponent<StateMachine>().SwitchState(new IdleState(leader, teaser));
 		bot = Resources.Load ("Bot");
 		ammo = Resources.Load ("Ammo");
-		SpawnBots();
-		SpawnAmmo(5);
-	}
-
-	void SpawnBots()
-	{
 		for(int i = 0; i < botCount; i++)
 		{
-			newPos = new Vector3(Random.Range (-20f, 20f), 0f, Random.Range(-20f, 20f));
-			GameObject botIns = Instantiate(bot, newPos, Quaternion.identity) as GameObject;
-			botIns.name = "Bot";
-			botIns.tag = "BotTag";
-			bots.Add(botIns);
-			botIns.GetComponent<StateMachine>().SwitchState(new IdleState(botIns, botIns));
+			SpawnBot();
+		}
+		for(int a = 0; a < ammoCount; a++)
+		{
+			SpawnAmmo();
 		}
 	}
 
-	void SpawnAmmo(int quantity)
+	void Update()
 	{
-		for(int i = 0; i < ammoCount; i++)
+		if(bots.Count < botCount)
 		{
-			newPos = new Vector3(Random.Range (-20f, 20f), 0f, Random.Range(-20f, 20f));
-			GameObject ammoIns = Instantiate(ammo, newPos, Quaternion.identity) as GameObject;
-			ammoIns.name = "Ammo";
-			ammoIns.tag = "AmmoTag";
-			//add ammo quantity
-			bots.Add(ammoIns);
+			if(!spawnBot)
+			{
+				Invoke("SpawnBot", 10f);
+				spawnBot = true;
+			}
 		}
+		if(ammos.Count < ammoCount)
+		{
+			if(!spawnAmmo)
+			{
+				Invoke("SpawnAmmo", 10f);
+				spawnAmmo = true;
+			}
+		}
+		Debug.Log (ammos.Count);
+	}
+	
+	void SpawnBot()
+	{
+		newPos = new Vector3(Random.Range (-20f, 20f), 0f, Random.Range(-20f, 20f));
+		GameObject botIns = Instantiate(bot, newPos, Quaternion.identity) as GameObject;
+		botIns.name = "Bot";
+		botIns.tag = "BotTag";
+		bots.Add(botIns);
+		botIns.GetComponent<StateMachine>().SwitchState(new IdleState(botIns, botIns));
+		spawnBot = false;
+	}
+
+	void SpawnAmmo()
+	{
+		newPos = new Vector3(Random.Range (-20f, 20f), 0f, Random.Range(-20f, 20f));
+		GameObject ammoIns = Instantiate(ammo, newPos, Quaternion.identity) as GameObject;
+		ammoIns.name = "Ammo";
+		ammoIns.tag = "AmmoTag";
+		ammos.Add(ammoIns);
+		spawnAmmo = false;
 	}
 }

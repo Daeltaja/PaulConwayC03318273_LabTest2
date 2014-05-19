@@ -8,6 +8,7 @@ class AttackingState:State
     float timeShot = 0.25f;
     GameObject enemyGameObject;
 
+
     public override string Description()
     {
         return "Attacking State";
@@ -32,12 +33,15 @@ class AttackingState:State
 
     public override void Update()
     {
+		if(enemyGameObject == null)
+		{
+			myGameObject.GetComponent<StateMachine>().SwitchState(new IdleState(myGameObject, myGameObject));
+		}
         float range = 10.0f;
         timeShot += Time.deltaTime;
         float fov = Mathf.PI / 4.0f;
         // Can I see the enemy?
 
-       
 	    float angle;
 	    Vector3 toEnemy = (enemyGameObject.transform.position - myGameObject.transform.position);
 	    toEnemy.Normalize();
@@ -46,10 +50,12 @@ class AttackingState:State
 	    {
 	        if (timeShot > 0.25f)
 	        {
-	            GameObject lazer = new GameObject();
-	            lazer.AddComponent<Lazer>();
-	            lazer.transform.position = myGameObject.transform.position;
-	            lazer.transform.forward = myGameObject.transform.forward;
+	            GameObject lazerGO = GameObject.Find ("Lazer");
+				GameObject lazerSpawn = myGameObject.transform.GetChild(0).gameObject;
+				GameObject lazer = MonoBehaviour.Instantiate(lazerGO, lazerSpawn.transform.position, lazerSpawn.transform.rotation) as GameObject;
+				lazer.transform.forward = lazerSpawn.transform.forward;
+				lazer.AddComponent<DestroyTimer>();
+				lazer.name = "Laser";
 	            timeShot = 0.0f;
 				myGameObject.GetComponent<Inventory>().ammoAmt --;
 	        }
@@ -58,5 +64,6 @@ class AttackingState:State
 		{
 			myGameObject.GetComponent<StateMachine>().SwitchState(new IdleState(myGameObject, enemyGameObject));
 		}
+
     }
 }
